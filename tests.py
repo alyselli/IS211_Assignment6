@@ -103,5 +103,74 @@ class TestConversions(unittest.TestCase):
                 )
 
 
+class TestRefactoredConversions(unittest.TestCase):
+
+    def testTemperatureConversions(self):
+        cases = [
+            ("Celsius", "Fahrenheit", 100, 212),
+            ("Celsius", "Kelvin", 0, 273.15),
+            ("Fahrenheit", "Celsius", 32, 0),
+            ("Fahrenheit", "Kelvin", 212, 373.15),
+            ("Kelvin", "Celsius", 273.15, 0),
+            ("Kelvin", "Fahrenheit", 373.15, 212)
+        ]
+
+        for fromUnit, toUnit, value, expected in cases:
+            print(f"Testing {fromUnit} to {toUnit}")
+            with self.subTest(fromUnit=fromUnit, toUnit=toUnit):
+                self.assertAlmostEqual(
+                    convert(fromUnit, toUnit, value), expected
+                )
+
+    def testDistanceConversions(self):
+        cases = [
+            ("Miles", "Yards", 1, 1760),
+            ("Miles", "Meters", 1, 1609.344),
+            ("Yards", "Miles", 1760, 1),
+            ("Yards", "Meters", 1, 0.9144),
+            ("Meters", "Miles", 1609.344, 1),
+            ("Meters", "Yards", 0.9144, 1)
+        ]
+
+        for fromUnit, toUnit, value, expected in cases:
+            print(f"Testing {fromUnit} to {toUnit}")
+            with self.subTest(fromUnit=fromUnit, toUnit=toUnit):
+                self.assertAlmostEqual(
+                    convert(fromUnit, toUnit, value), expected
+                )
+
+    def testSameUnitConversions(self):
+        units = [
+            "Celsius", "Fahrenheit", "Kelvin",
+            "Miles", "Yards", "Meters"
+        ]
+
+        for unit in units:
+            print(f"Testing {unit} to {unit}")
+            with self.subTest(unit=unit):
+                self.assertEqual(
+                    convert(unit, unit, 100), 100.0
+                )
+
+    def testInvalidConversions(self):
+        cases = [
+            ("Celsius", "Meters"),
+            ("Miles", "Fahrenheit"),
+            ("Kelvin", "Yards"),
+            ("Meters", "Celsius"),
+            ("Unknown", "Celsius")
+        ]
+
+        for fromUnit, toUnit in cases:
+            print(f"Testing invalid conversion: {fromUnit} to {toUnit}")
+            with self.subTest(fromUnit=fromUnit, toUnit=toUnit):
+                with self.assertRaises(ConversionNotPossible):
+                    convert(fromUnit, toUnit, 100)
+
+
 if __name__ == "__main__":
     unittest.main(verbosity=2)
+
+
+from conversions_refactored import convert, ConversionNotPossible
+
