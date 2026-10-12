@@ -1,4 +1,6 @@
 
+from conversions_refactored import convert, ConversionNotPossible
+
 import unittest
 from conversions import (
     convertCelsiusToKelvin,
